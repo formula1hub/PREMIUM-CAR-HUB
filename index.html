@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Car Wallpaper Hub</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #0b0b0b; color: white; margin: 0; text-align: center; }
+        
+        /* Header & Icons */
+        header { background: #111; padding: 20px; border-bottom: 2px solid #333; position: sticky; top: 0; z-index: 100; }
+        .social-icons img { width: 35px; margin: 0 10px; transition: 0.3s; cursor: pointer; }
+        .social-icons img:hover { transform: scale(1.2); }
+        #searchBar { padding: 12px; width: 60%; border-radius: 25px; border: 1px solid #444; background: #222; color: white; margin-top: 15px; }
+
+        /* Gallery Grid */
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding: 40px; }
+        .wallpaper-card { background: #1a1a1a; border-radius: 15px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid #333; }
+        .wallpaper-card:hover { transform: scale(1.03); border-color: #007bff; }
+        .wallpaper-card img { width: 100%; height: 220px; object-fit: cover; }
+        .car-info { padding: 15px; }
+        .car-info h3 { margin: 0; color: #007bff; }
+        .car-info p { font-size: 13px; color: #aaa; margin-top: 8px; }
+
+        /* Zoom Modal (Popup) */
+        .modal { display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); overflow: auto; }
+        .modal-content { margin: auto; display: block; width: 80%; max-width: 900px; padding-top: 50px; transition: transform 0.3s ease; cursor: zoom-in; }
+        .modal-content:active { transform: scale(1.5); cursor: zoom-out; } /* Simple Zoom Effect */
+        #caption { margin: auto; display: block; width: 80%; text-align: center; color: #ccc; padding: 20px 0; font-size: 20px; }
+        .close { position: absolute; top: 20px; right: 35px; color: #f1f1f1; font-size: 40px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>PREMIUM CAR HUB</h1>
+    <div class="social-icons">
+        <a href="https://www.instagram.com/accounts/login/" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/174/174855.png"></a>
+        <a href="https://www.facebook.com/login/" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/124/124010.png"></a>
+        <a href="https://web.whatsapp.com/" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png"></a>
+    </div>
+    <input type="text" id="searchBar" placeholder="Search car brands..." onkeyup="searchCar()">
+</header>
+
+<div class="gallery">
+    <div class="wallpaper-card" data-name="bmw m8" onclick="openModal(this)">
+        <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800" alt="BMW M8 Competition">
+        <div class="car-info">
+            <h3>BMW M8 Competition</h3>
+            <p>The peak of luxury performance. Featuring a V8 engine with M TwinPower Turbo technology, delivering 625 hp.</p>
+        </div>
+    </div>
+
+    <div class="wallpaper-card" data-name="porsche 911" onclick="openModal(this)">
+        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800" alt="Porsche 911 Carrera">
+        <div class="car-info">
+            <h3>Porsche 911</h3>
+            <p>A timeless sports car legend. Known for its rear-engine layout and incredible handling precision on the track.</p>
+        </div>
+    </div>
+
+    <div class="wallpaper-card" data-name="lamborghini huracan" onclick="openModal(this)">
+        <img src="https://nuvomagazine.com/wp-content/uploads/2018/09/Lamborghini-Huracan-Performante-Spyder-1.jpg" alt="Lamborghini Huracan">
+        <div class="car-info">
+            <h3>Lamborghini Huracán</h3>
+            <p>Named after a fighting bull, this V10 masterpiece is designed to cut through the air with extreme aerodynamics.</p>
+        </div>
+    </div>
+
+    <div class="wallpaper-card" data-name="audi r8" onclick="openModal(this)">
+        <img src="https://www.pcarmarket.com/static/media/uploads/galleries/photos/uploads/galleries/35349-issa-2018-audi-r8-v10-plus/.thumbnails/35349.jpg/35349-tiny-2048x0-0.5x0.jpg" alt="Audi R8">
+        <div class="car-info">
+            <h3>Audi R8 V10</h3>
+            <p>Sharing its DNA with the Huracan, the R8 offers a more refined, everyday supercar experience with Quattro AWD.</p>
+        </div>
+    </div>
+
+    <div class="wallpaper-card" data-name="ferrari 488" onclick="openModal(this)">
+        <img src="https://images.unsplash.com/photo-1592198084033-aade902d1aae?w=800" alt="Ferrari 488">
+        <div class="car-info">
+            <h3>Ferrari 488 Pista</h3>
+            <p>A track-focused Italian beast. Its turbocharged V8 engine is one of the most powerful in Ferrari's history.</p>
+        </div>
+    </div>
+</div>
+
+<div id="myModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="img01">
+    <div id="caption"></div>
+</div>
+
+<script>
+    // Search Function
+    function searchCar() {
+        let input = document.getElementById('searchBar').value.toLowerCase();
+        let cards = document.getElementsByClassName('wallpaper-card');
+        for (let i = 0; i < cards.length; i++) {
+            let name = cards[i].getAttribute('data-name');
+            cards[i].style.display = name.includes(input) ? "block" : "none";
+        }
+    }
+
+    // Modal / Zoom Function
+    function openModal(element) {
+        let modal = document.getElementById("myModal");
+        let modalImg = document.getElementById("img01");
+        let captionText = document.getElementById("caption");
+        let clickedImg = element.getElementsByTagName('img')[0];
+        
+        modal.style.display = "block";
+        modalImg.src = clickedImg.src;
+        captionText.innerHTML = clickedImg.alt;
+    }
+
+    function closeModal() {
+        document.getElementById("myModal").style.display = "none";
+    }
+</script>
+
+<div id="myModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="img01">
+    
+    <div id="spec-container">
+        <h2 id="car-title">Car Name</h2>
+        <table id="spec-table">
+            <tr>
+                <th>Top Speed</th>
+                <td id="top-speed">---</td>
+            </tr>
+            <tr>
+                <th>0-100 km/h</th>
+                <td id="acceleration">---</td>
+            </tr>
+            <tr>
+                <th>Engine</th>
+                <td id="engine-type">---</td>
+            </tr>
+        </table>
+        <p id="car-desc"></p>
+    </div>
+</div>
+
+<style>
+    /* Styling for the New Specs Table */
+    #spec-container {
+        background: #222;
+        width: 80%;
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #444;
+    }
+    #spec-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+    #spec-table th, #spec-table td {
+        padding: 10px;
+        border-bottom: 1px solid #333;
+        text-align: left;
+    }
+    #spec-table th { color: #007bff; width: 40%; }
+    #car-title { color: white; margin-top: 0; }
+</style>
+<style>
+    // Car Database - Add your car details here!
+    const carData = {
+        "bmw m8": { speed: "305 km/h", accel: "3.2s", engine: "4.4L V8 Twin-Turbo", desc: "The M8 is the ultimate grand tourer." },
+        "porsche 911": { speed: "306 km/h", accel: "3.4s", engine: "3.0L Flat-6 Turbo", desc: "The gold standard for sports cars." },
+        "lamborghini huracan": { speed: "325 km/h", accel: "2.9s", engine: "5.2L V10", desc: "Pure Italian aggression and sound." },
+        "audi r8": { speed: "331 km/h", accel: "3.1s", engine: "5.2L V10", desc: "A supercar that you can drive every day." },
+        "ferrari 488": { speed: "340 km/h", accel: "2.8s", engine: "3.9L V8 Twin-Turbo", desc: "Precision engineering from Maranello." }
+    };
+
+    function openModal(element) {
+        let modal = document.getElementById("myModal");
+        let modalImg = document.getElementById("img01");
+        let carKey = element.getAttribute('data-name'); // Get name from data-name
+        let clickedImg = element.getElementsByTagName('img')[0];
+
+        modal.style.display = "block";
+        modalImg.src = clickedImg.src;
+
+        // Fill Table with Data
+        if (carData[carKey]) {
+            document.getElementById("car-title").innerText = carKey.toUpperCase();
+            document.getElementById("top-speed").innerText = carData[carKey].speed;
+            document.getElementById("acceleration").innerText = carData[carKey].accel;
+            document.getElementById("engine-type").innerText = carData[carKey].engine;
+            document.getElementById("car-desc").innerText = carData[carKey].desc;
+        }
+    }
+
+    function closeModal() {
+        document.getElementById("myModal").style.display = "none";
+    }
+
+    function searchCar() {
+        let input = document.getElementById('searchBar').value.toLowerCase();
+        let cards = document.getElementsByClassName('wallpaper-card');
+        for (let i = 0; i < cards.length; i++) {
+            let name = cards[i].getAttribute('data-name');
+            cards[i].style.display = name.includes(input) ? "block" : "none";
+        }
+    }
+</script>
+
+</body>
+</html>
